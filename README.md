@@ -35,11 +35,12 @@ An example for such an circuit is suggested here: http://www.thomasknauf.de/rap/
 ![grafik](https://user-images.githubusercontent.com/98450191/153572739-ca93722a-7c4f-4cb3-abc5-d087621b8b64.png)
 
 When needing more then 1 optical inputs (e.g. 3 for anchor chain counter) it make sense to use an module like BUCCK_817_4_V1.0.
+![grafik](https://user-images.githubusercontent.com/98450191/153612142-9221c6fb-b963-413a-9dd8-ecab960d3dd3.png)
 
 Inside the Seatalk1 data line I have added an additional Resistor of 1K and couple both signals (Seatalk 1 Data, GND) via pin 1&2 on a 5-pin-socket.
 Pin 3,4 and 5 of these socket are used for anchor chain counter (reed contact, up , down).
 
-![grafik](https://user-images.githubusercontent.com/98450191/153439634-f86f9489-a16b-4b90-9781-0ee49bab2a9d.png) Source is Wikipedia
+![grafik](https://user-images.githubusercontent.com/98450191/153612080-9d67fe77-6967-4da9-a12f-5b9174ac2a88.png)
 
 
 # Software installation
