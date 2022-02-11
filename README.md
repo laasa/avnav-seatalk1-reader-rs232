@@ -38,7 +38,7 @@ When needing more then 1 optical inputs (e.g. 3 for anchor chain counter) it mak
 ![grafik](https://user-images.githubusercontent.com/98450191/153612142-9221c6fb-b963-413a-9dd8-ecab960d3dd3.png)
 
 Inside the Seatalk1 data line I have added an additional Resistor of 1K and couple both signals (Seatalk 1 Data, GND) via pin 1&2 on a 5-pin-socket.
-Pin 3,4 and 5 of these socket are used for anchor chain counter (reed contact, up , down).
+Pin 3,4 and 5 of these socket are used for anchor chain counter (reed contact, up , down) => https://github.com/laasa/avnav-anchor-chain-counter-rpi-gpio.
 
 ![grafik](https://user-images.githubusercontent.com/98450191/153612080-9d67fe77-6967-4da9-a12f-5b9174ac2a88.png)
 
