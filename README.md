@@ -1,4 +1,4 @@
-# avnav-seatalk1-reader-rpi-gpio
+# avnav-seatalk1-reader-rs232
 
 
 # General
