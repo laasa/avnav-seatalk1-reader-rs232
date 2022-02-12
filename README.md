@@ -28,20 +28,13 @@ Especially the last thing could be interesting: To have the most current 'depth 
 # Details
 
 # Hardware needs
-It is commended to use optocoupler between seatalk 1 level and RS232 inputs.
 
+There is the need to convert seatalk 1 level to RS232 levels.
 An example for such an circuit is suggested here: http://www.thomasknauf.de/rap/seatalk3.htm
 
 ![grafik](https://user-images.githubusercontent.com/98450191/153572739-ca93722a-7c4f-4cb3-abc5-d087621b8b64.png)
 
-When needing more then 1 optical inputs (e.g. 3 for anchor chain counter) it make sense to use an module like BUCCK_817_4_V1.0.
-![grafik](https://user-images.githubusercontent.com/98450191/153612142-9221c6fb-b963-413a-9dd8-ecab960d3dd3.png)
-
-Inside the Seatalk1 data line I have added an additional Resistor of 1K and couple both signals (Seatalk 1 Data, GND) via pin 1&2 on a 5-pin-socket.
-Pin 3,4 and 5 of these socket are used for anchor chain counter (reed contact, up , down) => https://github.com/laasa/avnav-anchor-chain-counter-rpi-gpio.
-
-![grafik](https://user-images.githubusercontent.com/98450191/153612080-9d67fe77-6967-4da9-a12f-5b9174ac2a88.png)
-
+Another idea is to use optocoupler between boat and PC.
 
 # Software installation
 
@@ -61,4 +54,5 @@ To install this plugin please
 ![grafik](https://user-images.githubusercontent.com/98450191/153557342-b5453d97-4b93-4f32-a148-b5365c5bd431.png)
 
 # TODOs
+- The real implementation
 - generate NMEA0183 frames (for multiplexing to other openplotter software like signalk) ?
