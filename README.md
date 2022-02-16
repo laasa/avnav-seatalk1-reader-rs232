@@ -56,3 +56,21 @@ To install this plugin please
 # TODOs
 - The real implementation
 - generate NMEA0183 frames (for multiplexing to other openplotter software like signalk) ?
+
+# Helpers
+Setup the serial devices by their serial numbers
+- Label your first USB serial device (e.g SeatalkOut)
+- Connect the first USB serial device to the PC
+- Get the vendorID, deviceID and serial number of the tty device (here "/dev/ttyUSB0")
+   udevadm info -a -n /dev/ttyUSB0 | grep {idVendor} | head -n1  => ATTRS{idVendor}=="0403" 
+   udevadm info -a -n /dev/ttyUSB0 | grep {bcdDevice} | head -n1 => ATTRS{bcdDevice}=="0600"
+   udevadm info -a -n /dev/ttyUSB0 | grep {serial} | head -n1    => ATTRS{serial}=="A10KKBM3"
+- creates an udev rule
+  mcedit sudo mcedit /etc/udev/rules.d/10-local.rules
+   SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A10KKBM3", MODE="0666", SYMLINK+="ttyUSB_SeatalkOut"
+- Continue with the next devices
+- Use this names in avnav (e.g: "/dev/ttyUSB_SeatalkOut")
+- at the end the file /etc/udev/rules.d/10-local.rules may look like that
+    SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A10KKF9V", MODE="0666", SYMLINK+="ttyUSB_SeatalkInp"
+    SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A10KKBM3", MODE="0666", SYMLINK+="ttyUSB_SeatalkOut"
+
