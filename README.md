@@ -53,6 +53,11 @@ To install this plugin please
 
 ![grafik](https://user-images.githubusercontent.com/98450191/153557342-b5453d97-4b93-4f32-a148-b5365c5bd431.png)
 
+# Known Issues
+- only tested with linux
+- Windows want work caused by missing defines for CMSPAR
+- CMSPAR is needed to use the sticky parity bit functionality
+
 # TODOs
 - generate NMEA0183 frames (for multiplexing to other openplotter software like signalk) ?
 
