@@ -54,7 +54,6 @@ To install this plugin please
 ![grafik](https://user-images.githubusercontent.com/98450191/153557342-b5453d97-4b93-4f32-a148-b5365c5bd431.png)
 
 # TODOs
-- The real implementation
 - generate NMEA0183 frames (for multiplexing to other openplotter software like signalk) ?
 
 # Helpers
