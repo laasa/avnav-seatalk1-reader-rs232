@@ -69,8 +69,8 @@ Setup the serial devices by their serial numbers
   mcedit sudo mcedit /etc/udev/rules.d/10-local.rules
    SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A10KKBM3", MODE="0666", SYMLINK+="ttyUSB_SeatalkOut"
 - Continue with the next devices
-- Use this names in avnav (e.g: "/dev/ttyUSB_SeatalkOut")
 - at the end the file /etc/udev/rules.d/10-local.rules may look like that
     SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A10KKF9V", MODE="0666", SYMLINK+="ttyUSB_SeatalkInp"
     SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="A10KKBM3", MODE="0666", SYMLINK+="ttyUSB_SeatalkOut"
+- Use this names in avnav (e.g: "/dev/ttyUSB_SeatalkInp")
 
