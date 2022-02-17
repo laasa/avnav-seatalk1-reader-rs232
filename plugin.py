@@ -1,4 +1,4 @@
-import serial, time, socket, signal, sys, threading, queue
+mport serial, time, socket, signal, sys, threading, queue
 import errno
 import fcntl
 import os
@@ -234,7 +234,8 @@ class Plugin:
         self.isBusy=False
         try:
           self.fd = os.open(self.device, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
-          fcntl.fcntl(self.fd, fcntl.F_SETFL, os.O_NONBLOCK)
+          #fcntl.fcntl(self.fd, fcntl.F_SETFL, os.FNDELAY)
+          #fcntl.fcntl(self.fd, fcntl.F_SETFL, os.O_NONBLOCK)
 
           # some systems support an extra flag to enable the two in POSIX unsupported
           # paritiy settings for MARK and SPACE
@@ -243,12 +244,16 @@ class Plugin:
           if plat[:5] == 'linux':    # Linux (confirmed)  # noqa
             # extra termios flags
             CMSPAR = 0o10000000000  # Use "stick" (mark/space) parity
+            self.api.log("Running on Linux: that is good")
+          else:
+            self.api.error("Need Linux as platform")
 
           ''' Here is the tricky part: Setting parity to SPACE, but want to get paraty errors'''
           orig_attr = termios.tcgetattr(self.fd)
           iflag, oflag, cflag, lflag, ispeed, ospeed, cc = orig_attr
           ''' set 8 data bits, sticky parity with parity bit reset (SPACE)'''
-          cflag &= ~(termios.CBAUD | termios.CSIZE | termios.PARENB  | termios.PARODD| termios.CRTSCTS | termios.CSTOPB)
+          ispeed=ospeed=termios.B4800
+          cflag &= ~(termios.CBAUD | termios.CBAUDEX | termios.CSIZE | termios.PARENB  | termios.PARODD | termios.CRTSCTS | termios.CSTOPB)
           cflag |=  (termios.B4800 | termios.CS8 | termios.CLOCAL | termios.CREAD | termios.PARENB | CMSPAR)
           lflag &= ~(termios.ICANON | termios.ECHO | termios.ECHOE | termios.ECHOK | termios.ECHONL | termios.ISIG | termios.IEXTEN)
           ''' enable marking data with bad parity '''
@@ -320,4 +325,3 @@ class Plugin:
           break;
 
       time.sleep(1)
-      
