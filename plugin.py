@@ -1,4 +1,4 @@
-mport serial, time, socket, signal, sys, threading, queue
+import serial, time, socket, signal, sys, threading, queue
 import errno
 import fcntl
 import os
