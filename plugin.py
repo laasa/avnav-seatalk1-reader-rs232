@@ -16,7 +16,7 @@ class Plugin:
     {
       'name': 'device',
       'description': 'set to the device path (alternative to usbid)',
-      'default': '/dev/ttyUSB_seatalkInp'
+      'default': '/dev/ttyUSB_SeatalkInp'
     },
     {
       'name': 'usbid',
@@ -168,20 +168,9 @@ class Plugin:
               self.api.debug("Get DBT SEATALK frame: " + str(value) + "'")
               rt['DBT'] = float(value or '0') / (10.0 * 3.281)
               self.api.addData(self.PATHDBT, rt['DBT'],source=source)
-
-#                DBT - Depth below transducer
-#                1   2 3   4 5   6 7
-#                |   | |   | |   | |
-#
-#        $--DBT,x.x,f,x.x,M,x.x,F*hh<CR><LF>
-#        Field Number:
-#         1) Depth, feet
-#         2) f = feet
-#         3) Depth, meters
-#         4) M = meters
-#         5) Depth, Fathoms
-#         6) F = Fathoms
-#         7) Checksum
+              record="$AADPT,%.1f,%.1f,"%(float(rt['DBT']),float(0.0))
+              self.api.addNMEA(record,addCheckSum=True,omitDecode=False,source=source)
+              self.api.debug("=> NMEA: " + str(record))
 
             ''' STW: 20  01  XX  XX  Speed through water: XXXX/10 Knots'''
             if((darray[1] == '20') and (darray[2] == '01')):
