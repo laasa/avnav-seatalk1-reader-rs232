@@ -11,7 +11,8 @@ import termios
 class Plugin:
   FILTER = []
   PATHDBT = "gps.STALK1_DBT"
-  PATHSTW = "gps.STALK1_STW"
+  PATHVHW = "gps.STALK1_VHW"
+  PATHMTW = "gps.STALK1_MTW"
   CONFIG=[
     {
       'name': 'device',
@@ -46,11 +47,15 @@ class Plugin:
       'data': [
         {
           'path': cls.PATHDBT,
-          'description': 'deepth below transducer',
+          'description': 'deepth below transducer [m]',
         },
         {
-          'path': cls.PATHSTW,
-          'description': 'speed trough water',
+          'path': cls.PATHVHW,
+          'description': 'speed trough water [m/s]',
+        },
+        {
+          'path': cls.PATHMTW,
+          'description': 'water temperature [deg C]',
         },
       ]
     }
@@ -146,7 +151,7 @@ class Plugin:
       self.api.setStatus("STARTED", "using usbid %s, baud=4800" % (usbid))
     else:
       self.api.setStatus("STARTED","using device %s, baud=4800"%(self.device))
-    connectionHandler=threading.Thread(target=self.handleConnection, name='seatalk-remote-connection')
+    connectionHandler=threading.Thread(target=self.handleConnection, name='seatalk1-reader-rs232')
     connectionHandler.setDaemon(True)
     connectionHandler.start()
     while changeSequence == self.changeSequence:
@@ -159,10 +164,13 @@ class Plugin:
         data = item.split("\r")
         self.api.debug("Read from queue: '" + str(data[0]) + "'")
         darray = data[0].split(",")
+        #if(int(self.debuglevel) > 0):
+        #  self.api.log("Read from queue: '" + str(data[0]) + "'")
         if ( darray[0] == '$STALK' ):
 
             ''' DPT: 00  02  YZ  XX XX  Depth below transducer: XXXX/10 feet'''
-            if((darray[1] == '00') and (darray[2] == '02') and (darray[3] == '00')):
+            ''' if((darray[1] == '00') and (darray[2] == '02') and (darray[3] == '00')): '''
+            if(darray[1] == '00'):
               rt={}
               value=int('0x' + str(darray[4]),base=16) + (int('0x'+ str(darray[5]), base=16)*255)
               self.api.debug("Get DBT SEATALK frame: " + str(value) + "'")
@@ -173,12 +181,22 @@ class Plugin:
               self.api.debug("=> NMEA: " + str(record))
 
             ''' STW: 20  01  XX  XX  Speed through water: XXXX/10 Knots'''
-            if((darray[1] == '20') and (darray[2] == '01')):
+            ''' if((darray[1] == '20') and (darray[2] == '01')): '''
+            if(darray[1] == '20'):
               rt={}
               value=int('0x' + str(darray[3]),base=16) + (int('0x'+ str(darray[4]), base=16)*255)
               self.api.debug("Get STW SEATALK frame: " + str(value) + " (0x" + str(darray[4]) +  str(darray[3]) + ")")
-              rt['STW'] = ((float(value or '0') / 10.0) * 1.852) / 3.6
-              self.api.addData(self.PATHSTW, rt['STW'],source=source)
+              rt['VHW'] = ((float(value or '0') / 10.0) * 1.852) / 3.6
+              self.api.addData(self.PATHVHW, rt['VHW'],source=source)
+
+            ''' MTW: 23  01  XX  YY  water temperature: XX deg C, YY deg F '''
+            ''' if((darray[1] == '23') and (darray[2] == '01')): '''
+            if(darray[1] == '23'):
+              rt={}
+              value=int('0x' + str(darray[3]),base=16)
+              self.api.debug("Get MTW SEATALK frame: " + str(value) + " (0x" + str(darray[3]) + ")")
+              rt['MTW'] = float(value or '0')
+              self.api.addData(self.PATHMTW, rt['MTW'],source=source)
 
       #VHW - Water speed and heading
 
@@ -200,7 +218,8 @@ class Plugin:
       except Exception as e:
         self.api.error("unable to read from queue: " + str(e))
         self.api.addData(self.PATHDBT, float('0'),source=source)
-        self.api.addData(self.PATHSTW, float('0'),source=source)
+        self.api.addData(self.PATHVHW, float('0'),source=source)
+        self.api.addData(self.PATHMTW, float('0'),source=source)
         pass
 
   def handleConnection(self):
@@ -253,6 +272,13 @@ class Plugin:
           cc[termios.VTIME] = 10
           cc[termios.VMIN]  = 0
           termios.tcsetattr(self.fd, termios.TCSANOW, [iflag, oflag, cflag, lflag, ispeed, ospeed, cc])
+
+          p = struct.pack('I', 0)
+          flags = fcntl.ioctl(self.fd, termios.TIOCMGET, p)
+          flags = struct.unpack('I', flags)[0]
+          flags |= (termios.TIOCM_DTR|termios.TIOCM_RTS)
+          p = struct.pack('I', flags)
+          fcntl.ioctl(self.fd, termios.TIOCMSET, p)
 
         except Exception as e:
             self.api.setStatus("ERROR","unable to connect/connection lost to %s: %s"%(self.device, str(e)))
@@ -314,3 +340,4 @@ class Plugin:
           break;
 
       time.sleep(1)
+     
