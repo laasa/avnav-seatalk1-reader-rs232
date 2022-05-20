@@ -188,6 +188,9 @@ class Plugin:
               self.api.debug("Get STW SEATALK frame: " + str(value) + " (0x" + str(darray[4]) +  str(darray[3]) + ")")
               rt['VHW'] = ((float(value or '0') / 10.0) * 1.852) / 3.6
               self.api.addData(self.PATHVHW, rt['VHW'],source=source)
+              record="$AAVHW,,T,,M,%.1f,N,,K"%(float(value or '0') / 10.0)
+              self.api.addNMEA(record,addCheckSum=True,omitDecode=False,source=source)
+              self.api.debug("=> NMEA: " + str(record))
 
             ''' MTW: 23  01  XX  YY  water temperature: XX deg C, YY deg F '''
             ''' if((darray[1] == '23') and (darray[2] == '01')): '''
@@ -197,6 +200,10 @@ class Plugin:
               self.api.debug("Get MTW SEATALK frame: " + str(value) + " (0x" + str(darray[3]) + ")")
               rt['MTW'] = float(value or '0')
               self.api.addData(self.PATHMTW, rt['MTW'],source=source)
+              record="$AAMTW,%.1f,C"%(float(rt['MTW']))
+              self.api.addNMEA(record,addCheckSum=True,omitDecode=False,source=source)
+              self.api.debug("=> NMEA: " + str(record))
+
 
       #VHW - Water speed and heading
 
